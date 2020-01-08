@@ -1,0 +1,39 @@
+<odoo>
+    <template id="js_report_includes" inherit_id="web.report_assets_common" name="JIM Report Includes">
+        <xpath expr="link[last()]" position="after">
+            <link href="/js_custom_reports/static/less/js_report_styles.less" rel="stylesheet" type="text/less" />
+        </xpath>
+    </template>
+    
+    <!-- [URL]/report/pdf/account.report_invoice/[id]           factura y rectificativa         -->
+    <!-- [URL]/report/pdf/sale.report_saleorder/[id]            presupuesto y pedido            -->
+    <!-- [URL]/report/pdf/sale.report_saleorder_pro_forma/[id]  proforma                        -->
+    <!-- [URL]/report/pdf/purchase.report_purchaseorder/[id]    Confirmación pedido de compra   -->
+    <!-- [URL]/report/pdf/stock.report_deliveryslip/[id]        Albarán. Vale de entrega        -->
+    
+    <template id="js_web_external_layout_background" inherit_id="web.external_layout_background">
+        <!-- Añadir vat number de crossfire (CIF/NIF) -->
+        <xpath expr="//div[hasclass('company_address')]" position="replace">
+            <div class="float-left company_address">
+                <div>
+                    <strong t-field="company.partner_id.name"/>
+                </div>
+                <span t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;phone&quot;], &quot;no_marker&quot;: true}"/>                 
+                <span>VAT NUMBER: <t t-esc="company.partner_id.vat" /></span>
+            </div>
+        </xpath>
+        <xpath expr="//div[hasclass('o_background_footer')]/div[hasclass('text-center')]" position="replace">
+            <div class="text-center">
+                <div t-field="company.report_footer"/>
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page:
+                    <span class="page"/>
+                    of
+                    <span class="topage"/>
+                </div>
+            </div>            
+        </xpath>
+    </template>
+
+
+</odoo>

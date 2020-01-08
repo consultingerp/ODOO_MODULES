@@ -1,0 +1,29 @@
+<odoo>
+
+    <!-- [URL]/report/pdf/account.report_invoice/[id]           factura y rectificativa         -->
+
+    <!-- Facturas -->
+    <template id="js_factura" inherit_id="account.report_invoice_document" name="JIM factura">
+
+        <!-- Mover la referencia de pago a después del número de cuenta -->
+        <xpath expr="//div[hasclass('page')]/p[@t-if='o.reference']" position="replace" />
+        <xpath expr="//div[hasclass('page')]" position="inside">
+            <p t-if="o.reference">
+                Please use the following communication for your payment : <b><span t-field="o.number"/></b>
+            </p>        
+        </xpath>
+
+        <!-- Tabla: Cambiar nombre columna de Description a Product -->
+        <xpath expr="//table[@name='invoice_line_table']/thead/tr/th[1]" position="replace">
+            <th class="text-left"><span>Product</span></th>            
+        </xpath>
+        <!-- Tabla: Cambiar contenido de Description: en lugar de mostrar el name de la primera columna, mostramos el display_name -->
+        <xpath expr="//td[@name='account_invoice_line_name']/span" position="replace">
+            <span t-field="line.product_id.display_name" />
+        </xpath>
+
+        <!-- Quitar la referencia de la fila de información -->
+       <xpath expr="//div[@name='reference']" position="replace" />
+
+    </template>
+</odoo>

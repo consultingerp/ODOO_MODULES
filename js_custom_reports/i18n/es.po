@@ -1,0 +1,84 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* js_custom_reports
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-01-08 08:43+0000\n"
+"PO-Revision-Date: 2020-01-08 09:48+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Language: es\n"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_albaran
+msgid "<b>Client address:</b>"
+msgstr "<b>Dirección del cliente</b>"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_presupuesto_y_pedido_de_venta
+msgid "<b>Notes:</b>"
+msgstr "<b>Notas:</b>"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_factura
+msgid "<span>Product</span>"
+msgstr "<span>Producto</span>"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_albaran
+msgid ""
+"CUALQUIER RECLAMACIÓN POR DAÑOS CAUSADOS DURANTE EL TRANSPORTE DEBERÁ "
+"HACERSE DENTRO DE LAS 24 HORAS SIGUIENTES A LA RECEPCIÓN DEL PEDIDO."
+msgstr ""
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_presupuesto_y_pedido_de_venta
+msgid "Order Confirmation"
+msgstr "Confirmación de orden"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_web_external_layout_background
+msgid ""
+"Page:\n"
+"                    <span class=\"page\"/>\n"
+"                    of\n"
+"                    <span class=\"topage\"/>"
+msgstr ""
+"Página:\n"
+"                    <span class=\"page\"/>\n"
+"                    de\n"
+"                    <span class=\"topage\"/>"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_factura
+msgid "Please use the following communication for your payment :"
+msgstr "Por favor, utilice la siguiente información para realizar el pago:"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_albaran
+msgid ""
+"ROGAMOS REVISEN LA MERCANCÍA. EN CASO DE ROTURA O PÉRDIDA DEL BULTO SERÁ "
+"IMPRESCINDIBLE HACERLO CONSTAR POR ESCRITO AL REPARTIDOR EN EL MOMENTO DE LA "
+"ENTREGA."
+msgstr ""
+"ROGAMOS REVISEN LA MERCANCÍA. EN CASO DE ROTURA O PÉRDIDA DEL BULTO SERÁ "
+"IMPRESCINDIBLE HACERLO CONSTAR POR ESCRITO AL REPARTIDOR EN EL MOMENTO DE LA "
+"ENTREGA."
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_presupuesto_y_pedido_de_venta
+msgid "Signature"
+msgstr "Firma"
+
+#. module: js_custom_reports
+#: model_terms:ir.ui.view,arch_db:js_custom_reports.js_web_external_layout_background
+msgid "VAT NUMBER:"
+msgstr "NIF:"

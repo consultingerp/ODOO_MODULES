@@ -1,0 +1,28 @@
+<odoo>
+    <template id="js_albaran" inherit_id="stock.report_delivery_document" name="JIM pedido albaran preparacion">
+        <xpath expr="//t[@name='partner_header']" position="replace">
+            <t t-set="address">
+                <b>Client address:</b>
+                <div t-esc="partner" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True}" />
+            </t>
+         <!--<span style="color:red;">lois</span>    
+        <t t-debug="pdb">
+            <span style="color:red;">lois2</span> 
+        </t>-->
+     
+ </xpath>
+
+
+ <!-- Mensaje albarán. -->
+ <xpath expr="//div[hasclass('page')]/p[last()]" position="after">            
+    <div class="md-form">
+        <div class="incidencias-transporte">
+            <p>ROGAMOS REVISEN LA MERCANCÍA. EN CASO DE ROTURA O PÉRDIDA DEL BULTO SERÁ IMPRESCINDIBLE HACERLO CONSTAR POR ESCRITO AL REPARTIDOR EN EL MOMENTO DE LA ENTREGA.</p>
+            <p>CUALQUIER RECLAMACIÓN POR DAÑOS CAUSADOS DURANTE EL TRANSPORTE DEBERÁ HACERSE DENTRO DE LAS 24 HORAS SIGUIENTES A LA RECEPCIÓN DEL PEDIDO.</p>
+        </div>
+    </div>
+</xpath>
+
+
+</template>
+</odoo>

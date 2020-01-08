@@ -1,0 +1,38 @@
+<odoo>
+
+    <!-- [URL]/report/pdf/sale.report_saleorder/[id]            presupuesto y pedido            -->
+    <template id="js_presupuesto_y_pedido_de_venta" inherit_id="sale.report_saleorder_document" priority="20">
+        
+        <xpath expr="//div[@class='page']/p[@t-if='doc.payment_term_id.note']" position="replace">
+            <div class="plazo-pago-anticipado" t-field="doc.payment_term_id.note" />
+        </xpath>
+        
+        <!-- Firma -->
+        <xpath expr="//div[hasclass('page')]/p[last()]" position="after">
+            <t t-if="(env.context.get('proforma', True) or is_pro_forma)">
+                <div class="md-form">
+                    <label for="firma">Order Confirmation</label>
+                    <textarea placeholder="Signature" type="text" id="firma" class="md-textarea form-control" rows="3" />
+                </div>
+            </t>
+        </xpath>
+
+        <!-- Tabla: En lugar de mostrar el name en la primera columna, mostramos el display_name -->
+        <xpath expr="//td/span[@t-field='line.name']" position="replace">
+            <t t-if="(env.context.get('proforma', True) or is_pro_forma)"> 
+               <span t-field="line.product_id.display_name"/>
+           </t>
+        </xpath>
+
+        <!-- Párrafo de nota después de tabla: contendrá las instrucciones -->
+        <xpath expr="//p[@t-field='doc.note']" position="replace">
+            <t t-if="(env.context.get('proforma', True) or is_pro_forma) and (doc.note != '')"> 
+                <div class="nota-presupuesto">
+                    <p><b>Notes:</b></p>
+                    <p t-field="doc.note"/>
+                </div>
+           </t>
+        </xpath>
+
+    </template> 
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Estilos propios del módulo (en static/less/)  -->
+    <template id="js_customization_generic_css" inherit_id="website.assets_frontend">
+        <xpath expr="." position="inside">
+            <link href="/js_customization/static/less/estilos.less" rel="stylesheet" type="text/less"/>
+        </xpath>
+    </template>
+
+    <template id="js_customization_ancho_lista_formularios_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link href="/js_customization/static/less/backend_styles.less" rel="stylesheet" type="text/less"/>
+        </xpath>
+    </template>
+
+    <template id="js_customization_pagina_de_inicio" inherit_id="website.assets_frontend">
+        <xpath expr="." position="inside">
+            <link href="/js_customization/static/less/pagina_inicio.less" rel="stylesheet" type="text/less"/>
+        </xpath>
+    </template>
+</odoo>
