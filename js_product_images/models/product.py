@@ -2,8 +2,6 @@
 from odoo import api, fields, models, tools, _
 # lib copied from odoo 11
 from . import pycompat
-# date lib
-from datetime import datetime
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
