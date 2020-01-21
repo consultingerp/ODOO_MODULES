@@ -48,7 +48,7 @@ class ProductImage(models.Model):
         else:
             return []
 
-    name = fields.Char('Name')
+    name = fields.Char('Name', translate=True)
     image = fields.Binary('Image', attachment=True)
     product_tmpl_id = fields.Many2one('product.template', string='Related Product', ondelete='cascade', copy=True)
     product_attributes_values = fields.Many2many('product.attribute.value', relation='product_image_rel', domain=_filter_product_attributes)
