@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Backend CSS -->
-    <template id="js_website_images_assets_backend" inherit_id="web.assets_backend" name="JS Website Images CSS Backend">
-        <xpath expr="." position="inside">
-            <link href="/js_website_images/static/less/backend.less" rel="stylesheet" type="text/less" />
-        </xpath>
-    </template>
-
-    <!-- Frontend JS -->
-    <template id="js_website_images_assets_frontend" inherit_id="website.assets_frontend" name="JS Website Images Scripts Frontend">
-        <xpath expr="script[last()]" position="after">
-            <script type="text/javascript" src="/js_website_images/static/js/functions.js" />
-        </xpath>
-    </template>
 
     <!-- Backend Product View -->
     <record id="js_website_images_template_form_view" model="ir.ui.view">
@@ -43,6 +30,30 @@
                     </kanban>
                 </field>
             </xpath>
+        </field>
+    </record>
+
+    <!-- Backend Variant Easy View -->
+    <record id="js_website_images_product_variant_easy_edit_view" model="ir.ui.view">
+        <field name="name">product.product.view.form.easy.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <field name="image_medium" position="replace">
+                <field name="image_variant" widget="image" class="oe_avatar" readonly="1" options="{ 'no_cache': True  }"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Backend Variant View -->
+    <record id="js_website_images_product_normal_form_view" model="ir.ui.view">
+        <field name="name">product.product.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="image" position="replace">
+                <field name="image_variant" widget="image" class="oe_avatar" readonly="1" options="{ 'no_cache': True  }"/>
+            </field>
         </field>
     </record>
 

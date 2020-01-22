@@ -6,9 +6,10 @@
     "author": "Jim Sports",
     "category": "Website",
     "website": "https://jimsports.com",
-    "depends": ["website_sale"],
+    "depends": ["product", "website_sale", "clarico_shop"],
     "data": [
         "security/ir.model.access.csv",
+        'views/assets.xml',
         "views/product_view.xml"
     ],
     'installable': True
