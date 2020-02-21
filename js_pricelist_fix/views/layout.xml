@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!-- Página principal (batch_index)  -->
+    <template id="pricelist_edit_index" name="JS Pricelist">
+        <t t-call="web.assets_frontend" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+        <t t-call="web.layout">
+            <t t-set="title">Pricelist Repair - Index</t>
+            <div class="o_content">
+                <div class="container" style="margin-top: 50px">
+                    <h1 style="margin-top: 0">Script para corrección de precios</h1>
+                    <p>Este script unifica los precios de las variantes en el producto siempre que sea el mismo para todas.</p>
+
+                    <form method="GET" action="/js_pricelist_fix/run">
+                        <div class="checkbox">
+                            <label>
+        						<input name="tmode" type="checkbox" checked="true" value="1" /> Modo de test (no se hacen cambios)
+        					</label>
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input id="allPricelists" type="checkbox" /> Procesar todas las tarifas
+                            </label>
+                        </div>
+
+                        <div id="setPricelistName" class="row" style="display: none;">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Lista de precios</div>
+                                        <input name="plimit" type="text" class="form-control" id="pricelistName" value="PVP02" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br/>
+
+                        <button type="submit" class="btn btn-success btn-lg">Ejecutar</button>
+                        <a href="/web" class="btn btn-link">Odoo Backend</a>
+                    </form>
+                </div>
+            </div>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script>
+                $('#allPricelists').change(function(){
+                    var $toggleElm = $('#setPricelistName');
+                    if($(this).is(":checked")) $toggleElm.slideUp();
+                    else $toggleElm.slideDown();
+                }).trigger('change');
+            </script>
+        </t>
+    </template>
+
+    <!-- Página de resultados (batch_update)  -->
+    <template id="pricelist_edit_batch" name="JS Pricelist Batch">
+        <t t-call="web.assets_frontend" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+        <t t-call="web.layout">
+            <t t-set="title">Pricelist Repair - Results</t>
+            <div class="o_content" style="margin-top: 50px">
+                <h2>Procesadas <t t-esc="total"/> plantillas de producto</h2>
+                <h3>Para las tarifas: <t t-esc="pricelists"/></h3>
+
+                <br/>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="5%">ID</th>
+                                <th width="5%">Referencia</th>
+                                <th width="20%">Nombre</th>
+                                <th width="5%">Variantes</th>
+                                <th width="5%">Resultado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="products" t-as="p">
+                                <tr>
+                                    <th scope="row"><t t-esc="p['id']"/></th>
+                                    <td><t t-esc="p['reference']"/></td>
+                                    <td><t t-esc="p['name']"/></td>
+                                    <td><t t-esc="p['variants']"/></td>
+                                    <td><t t-esc="p['prices_modified']"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <a href="/js_pricelist_fix" class="btn btn-success btn-sm">Main page</a>
+                <a href="/web" class="btn btn-link">Odoo Backend</a>
+                <br/><br/>
+
+            </div>
+        </t>
+    </template>
+
+</odoo>
