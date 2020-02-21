@@ -211,9 +211,9 @@ class jsProductPricelist(http.Controller):
 
                         for col_num, pricelist in csv_parsed['pricelists'].items():
 
-                            col_data = str(row[col_num])
-                            col_price = float(col_data) if unicode(col_data, 'utf-8').isnumeric() else 0.0
-                            
+                            unicode_price = unicode(row[col_num].replace('.', '', True), 'utf-8')
+                            col_price = float(row[col_num]) if unicode_price.isdigit() else 0.0
+
                             if product and col_price:
                                 # Borrar reglas antiguas
                                 old_prices = pricelist_item_model.search([
@@ -232,11 +232,11 @@ class jsProductPricelist(http.Controller):
                                         'applied_on': '1_product',
                                         'pricelist_id': pricelist.id,
                                         'product_tmpl_id': product.id,
-                                        'fixed_price': float(row[col_num])
+                                        'fixed_price': col_price
                                     })
 
                                 # Información de debug
-                                results[pricelist.name] = "%s >> [%s]" % ([p.fixed_price for p in old_prices], float(row[col_num]))
+                                results[pricelist.name] = "%s >> [%s]" % ([p.fixed_price for p in old_prices], col_price)
 
                                 if not test_mode:
                                     # Borrar reglas antiguas
@@ -260,19 +260,18 @@ class jsProductPricelist(http.Controller):
                                         'applied_on': '0_product_variant',
                                         'pricelist_id': pricelist.id,
                                         'product_id': product.id,
-                                        'fixed_price': float(row[col_num])
+                                        'fixed_price': col_price
                                     })
 
                                 # Información de debug
-                                results[pricelist.name] = "%s >> [%s]" % ([p.fixed_price for p in old_prices], float(row[col_num]))
+                                results[pricelist.name] = "%s >> [%s]" % ([p.fixed_price for p in old_prices], col_price)
 
                                 if not test_mode:
                                     # Borrar reglas antiguas
                                     old_prices.unlink()
                         
                         # Información de debug
-                        if product or variant and col_price and results:
-                            isProduct = not variant and product
+                        if product or variant and results:
                             item = product or variant
                             prices_debug = str()
 
@@ -281,11 +280,14 @@ class jsProductPricelist(http.Controller):
 
                             debug_processed.append({
                                 'id': item.id,
-                                'reference': "%s >> %s" % (row[0], item.default_code.strip()),
+                                'reference': item.default_code.strip(),
                                 'name': item.name,
-                                'variants': len(product.product_variant_ids) if isProduct else '-',
+                                'variants': len(product.product_variant_ids) if product else '-',
                                 'prices_modified': prices_debug
                             })
+
+                    if csv_parsed['counter'] >= 4:
+                        break
 
             # Pasamos los resultados a la vista
             return request.render('js_pricelist_fix.pricelist_edit_batch', {
