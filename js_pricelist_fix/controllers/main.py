@@ -2,6 +2,8 @@
 from odoo import http
 from odoo.http import request
 from datetime import datetime
+import csv
+import os
 
 class jsProductPricelist(http.Controller):
     @http.route([
@@ -119,8 +121,7 @@ class jsProductPricelist(http.Controller):
                                 'write_uid': main_price_rule.write_uid.id,
                                 'pricelist_id': pricelist.id,
                                 'applied_on': '1_product',
-                                'product_tmpl_id': product.id,
-                                'active': main_price_rule.active
+                                'product_tmpl_id': product.id
                             }
 
                             # Si "percent_price" no es 0
@@ -156,6 +157,138 @@ class jsProductPricelist(http.Controller):
             return request.render('js_pricelist_fix.pricelist_edit_batch', {
                 'total': len(product_list),
                 'pricelists': str([p.name for p in pricelists]),
+                'processed': len(debug_processed),
+                'products': debug_processed
+            })
+
+        else:
+            return 'No está autorizado para acceder a esta página'
+
+    @http.route([
+        '/js_pricelist_fix/update'
+    ], type='http', auth='user')
+    def run(self, filename=None, delimitier=';', tmode=0, **kw):
+
+        # Solo pueden acceder usuarios con permisos de configuración (Administración/Ajustes)
+        if request.env.user.has_group('base.group_system'):
+
+            test_mode = int(tmode) # Test mode como entero (0-1)
+            debug_processed = list() # Creamos una lista para guardar los valores
+            root_folder = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+            csv_path = os.path.join(root_folder, 'static', filename)
+
+            with open(csv_path) as csv_file:
+                product_model = request.env['product.template'].sudo()
+                variant_model = request.env['product.product'].sudo()
+                pricelist_model = request.env['product.pricelist'].sudo()
+                pricelist_item_model = request.env['product.pricelist.item'].sudo()
+                csv_reader = csv.reader(csv_file, delimiter=delimitier)
+                csv_parsed = { 'pricelists': dict(), 'counter': 0 }
+
+                for row in csv_reader:
+                    # Actualizar el contador
+                    csv_parsed['counter'] += 1
+
+                    # Si es la primera línea
+                    if csv_parsed.get('counter') == 1:
+                        # Para cada columna
+                        for col_name in row:
+                            # Que no sea REF o DESCRIPTION
+                            if col_name.upper() not in ('REF', 'DESCRIPTION'):
+                                # Buscamos la lista de precios
+                                pricelist = pricelist_model.search([('name', '=', col_name)], limit=1)
+                                # La lista de precios existe
+                                if pricelist:
+                                    csv_parsed['pricelists'].update({ row.index(col_name):pricelist })
+
+                    # Líneas restantes
+                    else:
+                        # Se buscan los productos por la primera columna (REFERENCIA)
+                        product = product_model.search([('default_code', '=', row[0])], limit=1)
+                        variant = variant_model.search([('default_code', '=', row[0])], limit=1)
+
+                        results = dict()
+
+                        for col_num, pricelist in csv_parsed['pricelists'].items():
+                            if product:
+                                # Borrar reglas antiguas
+                                old_prices = pricelist_item_model.search([
+                                    ('base', '=', 'list_price'),
+                                    ('compute_price', '=', 'fixed'),
+                                    ('applied_on', '=', '1_product'),
+                                    ('pricelist_id', '=', pricelist.id),
+                                    ('product_tmpl_id', '=', product.id)
+                                ])
+
+                                if not test_mode:
+                                    # Crear nueva
+                                    pricelist_item_model.create({
+                                        'base': 'list_price',
+                                        'compute_price': 'fixed',
+                                        'applied_on': '1_product',
+                                        'pricelist_id': pricelist.id,
+                                        'product_tmpl_id': product.id,
+                                        'fixed_price': float(row[col_num])
+                                    })
+
+                                # Información de debug
+                                results[pricelist.name] = "%s >> [%s]" % ([p.fixed_price for p in old_prices], float(row[col_num]))
+
+                                if not test_mode:
+                                    # Borrar reglas antiguas
+                                    old_prices.unlink()
+
+                            elif variant:
+                                # Borrar reglas antiguas
+                                old_prices = pricelist_item_model.search([
+                                    ('base', '=', 'list_price'),
+                                    ('compute_price', '=', 'fixed'),
+                                    ('applied_on', '=', '0_product_variant'),
+                                    ('pricelist_id', '=', pricelist.id),
+                                    ('product_id', '=', variant.id)
+                                ])
+
+                                if not test_mode:
+                                    # Crear nueva
+                                    pricelist_item_model.create({
+                                        'base': 'list_price',
+                                        'compute_price': 'fixed',
+                                        'applied_on': '0_product_variant',
+                                        'pricelist_id': pricelist.id,
+                                        'product_id': product.id,
+                                        'fixed_price': float(row[col_num])
+                                    })
+
+                                # Información de debug
+                                results[pricelist.name] = "%s >> [%s]" % ([p.fixed_price for p in old_prices], float(row[col_num]))
+
+                                if not test_mode:
+                                    # Borrar reglas antiguas
+                                    old_prices.unlink()
+
+
+                        
+                        if product or variant:
+                            isProduct = not variant and product
+                            item = product or variant
+                            prices_debug = str()
+
+                            for l,s in results.items():
+                                prices_debug += '<b>%s<b/><br/><pre>%s</pre>' % (l,s)
+
+                            debug_processed.append({
+                                'id': item.id,
+                                'reference': item.default_code.strip(),
+                                'name': item.name,
+                                'variants': len(product.product_variant_ids) if isProduct else '-',
+                                'prices_modified': prices_debug
+                            })
+
+            # Pasamos los resultados a la vista
+            return request.render('js_pricelist_fix.pricelist_edit_batch', {
+                'total': csv_parsed['counter'],
+                'pricelists': str([p.name for p in csv_parsed['pricelists'].values()]),
+                'processed': len(debug_processed),
                 'products': debug_processed
             })
 
