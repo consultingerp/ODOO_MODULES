@@ -204,8 +204,8 @@ class jsProductPricelist(http.Controller):
                     # Líneas restantes
                     else:
                         # Se buscan los productos por la primera columna (REFERENCIA)
-                        product = product_model.search([('default_code', '=', row[0])], limit=1)
-                        variant = variant_model.search([('default_code', '=', row[0])], limit=1)
+                        product = product_model.search([('default_code', 'like', row[0])], limit=1)
+                        variant = variant_model.search([('default_code', 'like', row[0])], limit=1)
 
                         results = dict()
 
@@ -265,9 +265,8 @@ class jsProductPricelist(http.Controller):
                                 if not test_mode:
                                     # Borrar reglas antiguas
                                     old_prices.unlink()
-
-
                         
+                        # Información de debug
                         if product or variant:
                             isProduct = not variant and product
                             item = product or variant
@@ -278,7 +277,7 @@ class jsProductPricelist(http.Controller):
 
                             debug_processed.append({
                                 'id': item.id,
-                                'reference': item.default_code.strip(),
+                                'reference': "%s >> %s" % (row[0], item.default_code.strip()),
                                 'name': item.name,
                                 'variants': len(product.product_variant_ids) if isProduct else '-',
                                 'prices_modified': prices_debug
