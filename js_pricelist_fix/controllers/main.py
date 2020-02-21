@@ -212,7 +212,7 @@ class jsProductPricelist(http.Controller):
                         for col_num, pricelist in csv_parsed['pricelists'].items():
 
                             col_data = str(row[col_num])
-                            col_price = float(col_data) if unicode(col_data, 'utf-8').isnumeric() or type(col_data) in (int, float) else 0.0
+                            col_price = float(col_data) if unicode(col_data, 'utf-8').isnumeric() else 0.0
                             
                             if product and col_price:
                                 # Borrar reglas antiguas
@@ -271,7 +271,7 @@ class jsProductPricelist(http.Controller):
                                     old_prices.unlink()
                         
                         # Información de debug
-                        if product or variant and col_price:
+                        if product or variant and col_price and results:
                             isProduct = not variant and product
                             item = product or variant
                             prices_debug = str()

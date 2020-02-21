@@ -106,7 +106,7 @@
         <t t-call="web.layout">
             <t t-set="title">Pricelist Repair - Results</t>
             <div class="o_content" style="margin: 20px">
-                <h2>Procesadas <t t-esc="total"/> plantillas de producto</h2>
+                <h2>Procesados <t t-esc="total"/> productos</h2>
                 <h3>Se han cambiado los precios para <t t-esc="processed"/> productos en las tarifas <t t-esc="pricelists"/></h3>
 
                 <br/>
