@@ -286,9 +286,6 @@ class jsProductPricelist(http.Controller):
                                 'prices_modified': prices_debug
                             })
 
-                    if csv_parsed['counter'] >= 4:
-                        break
-
             # Pasamos los resultados a la vista
             return request.render('js_pricelist_fix.pricelist_edit_batch', {
                 'total': csv_parsed['counter'],
