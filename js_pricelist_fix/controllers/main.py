@@ -259,7 +259,7 @@ class jsProductPricelist(http.Controller):
                                         'compute_price': 'fixed',
                                         'applied_on': '0_product_variant',
                                         'pricelist_id': pricelist.id,
-                                        'product_id': product.id,
+                                        'product_id': variant.id,
                                         'fixed_price': col_price
                                     })
 
