@@ -17,13 +17,21 @@ class jsProductPricelist(http.Controller):
     ], type='http', auth='user')
     def run(self, plimit=None, tmode=0, **kw):
 
+        pricelist_names = list()
+
+        # Convertir string a lista
+        if type(plimit) is str:
+            pricelist_names = plimit.split(',')
+            for pname in pricelist_names:
+                pname = pname.strip()
+
         # Solo pueden acceder usuarios con permisos de configuración (Administración/Ajustes)
         if request.env.user.has_group('base.group_system'):
 
             product_model = request.env['product.template'].sudo()
             pricelist_model = request.env['product.pricelist'].sudo()
             pricelist_item_model = request.env['product.pricelist.item'].sudo()
-            pricelists = pricelist_model.search([('name', '=', plimit)]) # Tarifas
+            pricelists = pricelist_model.search([('name', 'IN', pricelist_names)]) # Tarifas
             actual_date = datetime.now().strftime('%Y-%m-%d') # Fecha actual
             test_mode = int(tmode) # Test mode como entero (0-1)
             debug_processed = list() # Creamos una lista para guardar los valores
@@ -167,7 +175,7 @@ class jsProductPricelist(http.Controller):
     @http.route([
         '/js_pricelist_fix/update'
     ], type='http', auth='user')
-    def run(self, filename=None, delimitier=';', tmode=0, **kw):
+    def update(self, filename=None, delimitier=';', tmode=0, **kw):
 
         # Solo pueden acceder usuarios con permisos de configuración (Administración/Ajustes)
         if request.env.user.has_group('base.group_system'):
@@ -204,8 +212,8 @@ class jsProductPricelist(http.Controller):
                     # Líneas restantes
                     else:
                         # Se buscan los productos por la primera columna (REFERENCIA)
-                        product = product_model.search([('default_code', 'like', row[0])], limit=1)
-                        variant = variant_model.search([('default_code', 'like', row[0])], limit=1)
+                        product = product_model.search([('default_code', '=', row[0])], limit=1)
+                        variant = variant_model.search([('default_code', '=', row[0])], limit=1)
 
                         results = dict()
 
@@ -215,6 +223,7 @@ class jsProductPricelist(http.Controller):
                             col_price = float(row[col_num]) if unicode_price.isdigit() else 0.0
 
                             if product and col_price:
+
                                 # Borrar reglas antiguas
                                 old_prices = pricelist_item_model.search([
                                     ('base', '=', 'list_price'),
@@ -281,7 +290,7 @@ class jsProductPricelist(http.Controller):
                             debug_processed.append({
                                 'id': item.id,
                                 'reference': item.default_code.strip(),
-                                'name': item.name,
+                                'name': item.name + ' > ' + str(row[0]),
                                 'variants': len(product.product_variant_ids) if product else '-',
                                 'prices_modified': prices_debug
                             })
